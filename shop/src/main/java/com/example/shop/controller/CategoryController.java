@@ -17,7 +17,7 @@ public class CategoryController {
     @Autowired
     CategoryMapper categoryMapper;
 
-    //selectAll
+    //selectall - 按照categoryName 降序排列
     @GetMapping("/getAllCategory")
     public List<Category> getAllCategory(){
         Example example = new Example(Category.class);
@@ -32,7 +32,7 @@ public class CategoryController {
         Example.Criteria criteria = example.createCriteria();
 
         criteria.andEqualTo("categoryId", id);
-        criteria.andLike("categoryName", "%ce%");
+        //criteria.andLike("categoryName", "%ce%");
         //criteria.andGreaterThan("categoryId", "1");//大于
         //criteria.andLessThan("categoryId", "2");//小于
         //criteria.andIsNotNull("categoryId");
@@ -53,22 +53,20 @@ public class CategoryController {
     }
 
     //updateSelectiveCategory 中update仅更新设置了的字段，其他字段可以为null
-    @PostMapping("/updateExampleSelectedCategory/{id}/{name}")
-    public void updateSelectedCategory(@PathVariable("id") String id, @PathVariable("name") String name){
+    @PostMapping("/updateExampleSelectedCategory")
+    public void updateExampleSelectedCategory(@RequestBody Category category){
         Example example = new Example(Category.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("categoryID",id);
-        Category category = new Category();
-        category.setCategoryName(name);
+        criteria.andEqualTo("categoryId",category.getCategoryID());
         categoryMapper.updateByExampleSelective(category,example);
-    }
+        }
 
     //updateByExample 不论设置多少个字段，统一都要更新一遍
-    @PostMapping("/updateSelectedCategory")
+    @PostMapping("/updateExampleCategory")
     public void updateSelectedCategory(@RequestBody Category category){
         Example example = new Example(Category.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("categoryID",category.getCategoryID());
+        criteria.andEqualTo("categoryId",category.getCategoryID());
         categoryMapper.updateByExample(category,example);
     }
 
